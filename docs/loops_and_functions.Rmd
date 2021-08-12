@@ -1,0 +1,100 @@
+---
+title: "loops_and_functions"
+author: "Marie Rivers"
+date: "8/12/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Part 1. For loops revisited
+```{r}
+# Task 1
+weekdays <- c("Monday", "Tuesday", "Wednesday", "Thursay", "Friday", "Saturday", "Sunday")
+transects <- c("Transect A", "Transect B", "Transect C")
+
+# create an output matrix
+out_matrix <- matrix(ncol = length(transects), nrow = length(weekdays))
+
+for (i in seq_along(weekdays)) {
+  for (j in seq_along(transects)) {
+    entry <- print(paste(weekdays[i], "-", transects[j]))
+    out_matrix[i, j] <- entry
+  }
+}
+
+```
+## Part. 2 Functions introduced
+```{r}
+# Task 2
+force <- function(mass_kg, acceleration) {
+  f_newtons <- mass_kg * acceleration
+  print(paste("The resulting force is", f_newtons, "Newtons"))
+}
+force(30, 50)
+
+```
+```{r}
+# Task 3
+name_column <- function(df_name, num) {
+  if (num < 1) {
+    stop("column number must be greater than or equal to 1")
+  }
+  if (num > length(df_name)) {
+    stop("the number entered exceeds the number of columns in the data frame")
+  }
+  print(colnames(df_name[num]))
+}
+name_column(mtcars, 3)
+name_column(mtcars, 0)
+name_column(mtcars, 12)
+```
+```{r}
+# Task 4
+fish_parms <- data.frame(sci_name = c("chanos chanos", "sphyraena barracuda", "caranx ignobilis"),
+                         common_name = c("milkfish", "great barracuda", "giant trevally"),
+                         a_est = c(0.0905, 0.0181, 0.0353),
+                         b_est = c(2.52, 3.27, 3.05))
+fish_weight <- function(fish_name, tot_length) {
+  fish_select <- dplyr::filter(fish_parms, common_name == fish_name)
+  
+  weight <- fish_select$a_est * tot_length ^ fish_select$b_est
+  return(weight)
+}
+fish_weight("great barracuda", 10)
+
+length_range <- seq(from = 0, to = 100, by = 1)
+
+milkfish_weights <- fish_weight(fish_name = "milkfish", tot_length = length_range)
+milkfish_weights
+```
+```{r}
+# Task 5
+wave_height <- seq(from = 0, to = 3, by = 0.2)
+wave_power <- function(height, time) {
+  Pdeep <- 0.5 * wave_height ^ 2 * time
+  return(Pdeep)
+}
+power <- wave_power(height = wave_height, time = 8)
+print(power)
+```
+```{r}
+# Task 6
+wave_power_by_depth <- function(h, t, d) {
+  if (d > 12) {
+    wave_power_deep <- 0.5 * h ^ 2 * t
+    print(wave_power_deep)
+    message("deep water equation was used")
+  }
+  if (d <= 12) {
+    wave_power_shallow <- 0.81 * h ^ 2 * t
+    print(wave_power_shallow)
+    message("shallow water equation was used")
+  }
+}
+wave_power_by_depth(5, 8, 3)
+
+```
